@@ -1,0 +1,7 @@
+# Bundle patch layer: the row loads this package's main entry as the host half
+# (a no-op Cordis plugin); the `dsh.client` declaration in package.json makes
+# the web app load ./client.js as the browser half, which registers the left
+# sidebar entry and the panel it opens.
+- insert:
+    - id: dsh-shooter
+      name: '@local/dsh-shooter'
