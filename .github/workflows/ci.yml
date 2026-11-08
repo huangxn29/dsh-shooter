@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Syntax check
+        run: node --check client.js
+      - name: AI simulation
+        run: node scripts/sim-ai.mjs 20000
+      - name: Panel UI regression
+        run: node scripts/sim-ui.mjs
+      - name: Pet commentary
+        run: node scripts/sim-pet.mjs
+      - name: Features (timestep, storage, sound, big screen, combo)
+        run: node scripts/sim-features.mjs
+      - name: Progress (leaderboard, achievements, skins)
+        run: node scripts/sim-meta.mjs
+      - name: Package contents
+        run: npm pack --dry-run

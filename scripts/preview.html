@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>大肥鱼观战 · 画面预检</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #0d0f1a; color: #e8ecf5; font-family: system-ui, sans-serif; }
+  #stage { position: relative; width: 960px; height: 600px; margin: 0 auto; overflow: hidden; background: #0d0f1a; }
+  #stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  #hud { position: absolute; top: 12px; left: 12px; right: 12px; display: flex; gap: 12px; justify-content: space-between; font-size: 13px; pointer-events: none; }
+  #hud div { background: rgba(20, 24, 38, 0.72); border: 1px solid #2a3044; border-radius: 8px; padding: 6px 12px; }
+  #note { width: 960px; margin: 8px auto; font-size: 12px; color: #8892a8; text-align: center; }
+</style>
+</head>
+<body>
+<div id="stage"><canvas id="game"></canvas></div>
+<div id="hud"><div id="hud-left">得分 0</div><div id="hud-mid">生命 100</div><div id="hud-right">第 1 波</div></div>
+<div id="note">预览页：加载真实 client.js，直接跑大肥鱼托管实机（用于截图核对画面）</div>
+
+<script>
+  // client.js registers itself on window.__ModuleLoader__; capture the module so
+  // we can build it with a minimal React stub (only mountGame is used here).
+  window.__ModuleLoader__ = {
+    load: function (mod) { window.__moduleCapture = mod; }
+  };
+</script>
+<script src="../client.js"></script>
+<script>
+  var mod = window.__moduleCapture.factory(function (id) {
+    if (id !== 'react') throw new Error('unexpected require: ' + id);
+    return { createElement: function () { return {}; } };
+  });
+
+  var canvas = document.getElementById('game');
+  var hudLeft = document.getElementById('hud-left');
+  var hudMid = document.getElementById('hud-mid');
+  var hudRight = document.getElementById('hud-right');
+
+  function stateLabel(state) {
+    return { hunt: '追猎', retreat: '拉枪线', dodge: '躲弹', dash: '冲刺', heal: '吃血', cruise: '游弋' }[state] || state;
+  }
+
+  var game = mod.__test.mountGame(canvas, function (hud) {
+    hudLeft.textContent = '得分 ' + hud.score;
+    hudMid.textContent = '生命 ' + hud.hp;
+    hudRight.textContent = '第 ' + hud.wave + ' 波 · ' + (hud.ai ? '大肥鱼托管（' + stateLabel(hud.aiState) + '）' : '手动');
+  });
+
+  game.resize();
+  game.setAI(true);
+  game.start();
+  game.startLoop();
+</script>
+</body>
+</html>

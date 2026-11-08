@@ -1,7 +1,7 @@
 {
   "name": "dsh-shooter",
-  "version": "1.0.1",
-  "description": "A top-down arena shooter that opens as a full panel from a left sidebar entry in DeepSeek Harness.",
+  "version": "1.2.0",
+  "description": "A top-down arena shooter panel for DeepSeek Harness, with a watch mode where the desktop pet plays by itself while you watch, plus local leaderboard, achievements and skins.",
   "license": "MIT",
   "type": "module",
   "icon": "icon.svg",
@@ -12,7 +12,11 @@
     "game",
     "shooter",
     "canvas",
-    "sidebar"
+    "sidebar",
+    "watch-mode",
+    "autopilot",
+    "desktop-pet",
+    "arcade"
   ],
   "repository": {
     "type": "git",
@@ -24,6 +28,19 @@
     "./client": "./client.js",
     "./locale/*.json": "./locale/*.json",
     "./icon": "./icon.svg"
+  },
+  "scripts": {
+    "sim": "node scripts/sim-ai.mjs",
+    "sim:ui": "node scripts/sim-ui.mjs",
+    "sim:pet": "node scripts/sim-pet.mjs",
+    "sim:features": "node scripts/sim-features.mjs",
+    "sim:meta": "node scripts/sim-meta.mjs",
+    "check": "node --check client.js && node scripts/sim-ai.mjs 20000 && node scripts/sim-ui.mjs && node scripts/sim-pet.mjs && node scripts/sim-features.mjs && node scripts/sim-meta.mjs",
+    "prepublishOnly": "npm run check"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   },
   "files": [
     "index.js",
